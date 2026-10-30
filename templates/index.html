@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="csrf-token" content="{{ csrf_token }}">
+  <title>Multiple VIN Search</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main class="shell">
+  <nav class="account-bar"><span>Signed in as <strong>{{ request.current_user['username'] }}</strong></span><div>{% if request.current_user['role'] == 'admin' %}<a href="{{ url_for('admin_users') }}">Manage users</a>{% endif %}<form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button type="submit" class="link-button">Sign out</button></form></div></nav>
+  <h1>Multiple VIN Search System</h1>
+  <section class="inputs">
+    <div class="entry"><label for="vins">Enter multiple VINs (one per line, or separated by commas):</label><textarea id="vins" placeholder="Paste VINs here, one per line"></textarea><small>Duplicates are removed automatically.</small></div>
+    <div class="controls"><span id="status" role="status">Checking shared report data…</span><button id="search" class="primary">Search VINs</button><button id="clear" class="secondary">Clear</button><button id="download" class="secondary">Download</button>{% if request.current_user['role'] == 'admin' %}<label class="file-picker" for="bundle"><span id="file-name">Upload or replace shared reports ZIP</span></label><input id="bundle" type="file" accept=".zip,application/zip"><small class="share-note">The uploaded dataset will be shared with all users.</small>{% endif %}<details><summary>Required report files</summary><ul>{% for file in files %}<li>{{ file }}</li>{% endfor %}</ul></details></div>
+  </section>
+  <div id="results" class="results" hidden>
+    <section class="result-panel"><div class="section-heading"><h2>port information</h2></div><div class="table-wrap"><table id="port-table"></table></div><span class="count" id="port-count"></span></section>
+    <section class="result-panel"><div class="section-heading"><h2>delivered units</h2></div><div class="table-wrap"><table id="delivered-table"></table></div><span class="count" id="delivered-count"></span></section>
+    <section class="result-panel"><div class="section-heading"><h2>missing vins</h2></div><div class="table-wrap"><table id="missing-table"></table></div><span class="count" id="missing-count"></span></section>
+  </div>
+  <footer>The shared report data is available to all registered users. Ask the administrator to replace it when reports change.</footer>
+</main><script src="{{ url_for('static', filename='app.js') }}"></script>
+</body></html>
